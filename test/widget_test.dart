@@ -70,19 +70,19 @@ void main() {
     await tester.ensureVisible(find.byType(SwitchListTile).first);
     await tester.tap(find.byType(SwitchListTile).first);
     await tapSave(tester);
-    expect(find.text('Telecomando SMS'), findsOneWidget);
+    expect(find.text('GSM Remote'), findsOneWidget);
     expect(find.text('Luci'), findsOneWidget);
     final saved = await StorageService(preferences: preferences).load();
     expect(saved.recipient, '+393331234567');
     expect(saved.buttons.first.smsText, ' ON\n');
     expect(saved.buttons.first.requireConfirmation, isFalse);
     expect(saved.buttons.first.icon, CommandIcon.melody);
-    expect(saved.buttons.first.color, CommandColor.coral);
+    expect(saved.buttons.first.color, CommandColor.amber);
     final homeButton = tester.widget<CommandButton>(
       find.byType(CommandButton).first,
     );
     expect(homeButton.config.icon, CommandIcon.melody);
-    expect(homeButton.config.color, CommandColor.coral);
+    expect(homeButton.config.color, CommandColor.amber);
     expect(find.byIcon(Icons.music_note_outlined), findsOneWidget);
     await openSettings(tester);
     expect(tester.widget<TextFormField>(fields.at(1)).controller!.text, 'Luci');
@@ -150,7 +150,7 @@ void main() {
       expect(find.text('Scartare le modifiche?'), findsOneWidget);
       await tester.tap(find.text('Scarta'));
       await tester.pumpAndSettle();
-      expect(find.text('Telecomando SMS'), findsOneWidget);
+      expect(find.text('GSM Remote'), findsOneWidget);
       expect(preferences.values, isEmpty);
     },
   );

@@ -1,6 +1,6 @@
-enum CommandIcon { melody, tune, light, lock, home }
+enum CommandIcon { melody, light, church, bell, hammer }
 
-enum CommandColor { green, amber, purple, blue, coral, pink }
+enum CommandColor { green, amber, purple, blue }
 
 class CommandButtonConfig {
   const CommandButtonConfig({
@@ -43,10 +43,16 @@ class CommandButtonConfig {
   }) {
     // Migra le icone ritirate senza perdere gli altri campi del comando.
     final iconName = switch (json['icon']) {
-      'power' => 'tune',
+      'power' || 'tune' || 'home' => 'church',
       'bolt' => 'light',
       'sms' => 'melody',
-      'gate' => 'lock',
+      'gate' => 'church',
+      'lock' => 'hammer',
+      final value => value,
+    };
+    final colorName = switch (json['color']) {
+      'coral' => 'amber',
+      'pink' => 'purple',
       final value => value,
     };
     final name = json['name'];
@@ -70,7 +76,7 @@ class CommandButtonConfig {
           defaultIcon,
       color:
           CommandColor.values
-              .where((value) => value.name == json['color'])
+              .where((value) => value.name == colorName)
               .firstOrNull ??
           defaultColor,
     );

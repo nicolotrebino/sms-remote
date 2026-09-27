@@ -1,4 +1,4 @@
-# Telecomando SMS
+# GSM Remote
 
 App Flutter Android/iOS interamente locale, con quattro comandi personalizzabili.
 I comandi aprono il **compositore SMS nativo** con destinatario e testo compilati:
@@ -22,11 +22,11 @@ definitivi e la firma delle app. Le cartelle Android e iOS sono già generate.
 
 Aprire l'ingranaggio nella Home, configurare il destinatario e i quattro comandi,
 quindi premere **Salva impostazioni**. Ogni comando include nome, testo SMS e
-interruttore di conferma. Puoi scegliere anche una delle cinque icone e uno dei sei
+interruttore di conferma. Puoi scegliere anche una delle cinque icone e uno dei quattro
 colori proposti per ciascun pulsante. Premi **Salva impostazioni** per applicare
 le scelte alla Home e conservarle al riavvio. Le configurazioni precedenti
 mantengono i colori; le icone ritirate vengono sostituite automaticamente:
-accensione → regolazione, energia → luce, messaggio → melodia, porta → serratura. La Home ha esattamente quattro pulsanti comando grandi;
+accensione/regolazione/casa/porta → chiesa, energia → luce, messaggio → melodia, serratura → martello. I colori corallo e rosa diventano ambra e viola. La Home ha esattamente quattro pulsanti comando grandi;
 la navigazione alle impostazioni avviene dalla barra superiore.
 
 Il numero accetta 3–15 cifre, un `+` iniziale facoltativo e separatori comuni
@@ -130,7 +130,9 @@ Il marchio orizzontale trasparente `assets/images/trebino.png` è integrato
 nella barra compatta della Home, sullo stesso sfondo del contenuto, accanto
 all'accesso alle impostazioni. Gli accenti del tema riprendono l'oro Trebino;
 i colori personalizzati dei comandi rimangono invariati.
-Le icone comando disponibili sono Melodia, Regolazione, Luce, Serratura e Casa.
+Le icone comando disponibili sono Melodia, Luce, Chiesa, Distesa (campana) e Martello.
+Le impostazioni mostrano i quattro comandi in pannelli esclusivi: aprirne uno
+chiude quello aperto in precedenza. Ogni pannello riepiloga icona, colore e nome.
 
 Le icone native Android (anche adattive) e iOS sono generate da
 `assets/images/trebino_icon.png`, centrato senza deformazioni su fondo avorio.
@@ -145,3 +147,18 @@ Le dimensioni del livello adattivo seguono la
 L'icona di lancio è una risorsa nativa e non richiede registrazione in `pubspec.yaml`.
 Dopo la modifica serve ricompilare e aggiornare l'app installata; hot reload non
 aggiorna l'icona nel launcher.
+
+## APK Android per GitHub Releases
+
+La variante `release` è firmata con una chiave RSA dedicata, conservata in locale
+nei file ignorati `android/app/gsm-remote-release.keystore` e `android/key.properties`;
+la password è in `android/gsm-remote-release.password`. Gradle non usa la chiave
+debug. Esegui `flutter build apk --release` per creare l'APK firmato.
+
+La chiave privata e le password non vanno caricate su GitHub o condivise. Fai
+una copia di sicurezza cifrata dei tre file: la stessa chiave serve per firmare
+ogni aggiornamento e senza di essa Android non accetterà l'aggiornamento di chi ha
+installato questa versione. L'APK è destinato alla distribuzione diretta come
+asset di una GitHub Release; per installarlo dopo la precedente build debug, prima
+disinstalla la versione debug. L'application ID attuale resta quello provvisorio
+`com.example.sms_remote`.

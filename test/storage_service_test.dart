@@ -57,10 +57,13 @@ void main() {
 
   test('Retired icons migrate without changing command content', () {
     const replacements = {
-      'power': CommandIcon.tune,
+      'power': CommandIcon.church,
       'bolt': CommandIcon.light,
       'sms': CommandIcon.melody,
-      'gate': CommandIcon.lock,
+      'gate': CommandIcon.church,
+      'tune': CommandIcon.church,
+      'lock': CommandIcon.hammer,
+      'home': CommandIcon.church,
     };
     for (final entry in replacements.entries) {
       final json = const CommandButtonConfig(

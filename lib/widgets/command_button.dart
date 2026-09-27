@@ -49,10 +49,6 @@ class CommandButton extends StatelessWidget {
               ),
             ),
           ),
-          if (config.requireConfirmation) ...[
-            const SizedBox(width: 12),
-            const Icon(Icons.verified_user_outlined, size: 18),
-          ],
         ],
       ),
     );

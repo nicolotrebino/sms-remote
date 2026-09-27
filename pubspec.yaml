@@ -1,5 +1,5 @@
 name: sms_remote
-description: Telecomando SMS locale con quattro comandi personalizzabili.
+description: Telecomando GSM locale con quattro comandi personalizzabili.
 publish_to: 'none'
 version: 1.0.0+1
 

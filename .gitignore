@@ -43,6 +43,26 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/key.properties
+/android/app/gsm-remote-release.keystore
+/android/gsm-remote-release.password
 
 # Widget Preview related
 .widget_preview/
+
+# Other
+dist/
+build/
+**/build/
+android/build/
+
+*.jks
+*.keystore
+*.apk
+*.aab
+
+key.properties
+**/key.properties
+
+.env
+.env.*

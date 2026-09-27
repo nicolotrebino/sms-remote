@@ -27,6 +27,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late final List<bool> _confirmations;
   late final List<CommandIcon> _icons;
   late final List<CommandColor> _colors;
+  late final List<ExpansibleController> _sectionControllers;
   bool _saving = false;
   bool _dirty = false;
   bool _allowPop = false;
@@ -48,12 +49,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _confirmations = settings.buttons
         .map((b) => b.requireConfirmation)
         .toList();
+    _sectionControllers = List.generate(
+      AppSettings.buttonCount,
+      (_) => ExpansibleController(),
+    );
   }
 
   @override
   void dispose() {
     _recipient.dispose();
     for (final controller in [..._names, ..._texts]) {
+      controller.dispose();
+    }
+    for (final controller in _sectionControllers) {
       controller.dispose();
     }
     super.dispose();
@@ -169,119 +177,174 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         onChanged: (_) => _markDirty(),
                       ),
                       const SizedBox(height: 24),
-                      for (
-                        var index = 0;
-                        index < AppSettings.buttonCount;
-                        index++
-                      )
-                        Card(
-                          margin: const EdgeInsets.only(bottom: 16),
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Text(
-                                  'Pulsante ${index + 1}',
-                                  style: Theme.of(
+                      Column(
+                        children: [
+                          for (
+                            var index = 0;
+                            index < AppSettings.buttonCount;
+                            index++
+                          )
+                            Card(
+                              margin: const EdgeInsets.only(bottom: 10),
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                  color: Theme.of(
                                     context,
-                                  ).textTheme.titleMedium,
+                                  ).colorScheme.outlineVariant,
                                 ),
-                                const SizedBox(height: 16),
-                                TextFormField(
-                                  controller: _names[index],
-                                  enabled: !_saving,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Nome',
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              clipBehavior: Clip.antiAlias,
+                              child: ExpansionTile(
+                                controller: _sectionControllers[index],
+                                initiallyExpanded: false,
+                                maintainState: true,
+                                onExpansionChanged: (expanded) {
+                                  if (!expanded) return;
+                                  for (
+                                    var other = 0;
+                                    other < _sectionControllers.length;
+                                    other++
+                                  ) {
+                                    if (other != index &&
+                                        _sectionControllers[other].isExpanded) {
+                                      _sectionControllers[other].collapse();
+                                    }
+                                  }
+                                },
+                                leading: CircleAvatar(
+                                  backgroundColor: _colors[index].seed
+                                      .withValues(alpha: 0.16),
+                                  child: Icon(
+                                    _icons[index].data,
+                                    color: _colors[index].seed,
                                   ),
-                                  textInputAction: TextInputAction.next,
-                                  validator: CommandButtonConfig.validateName,
-                                  onChanged: (_) => _markDirty(),
                                 ),
-                                const SizedBox(height: 16),
-                                TextFormField(
-                                  controller: _texts[index],
-                                  enabled: !_saving,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Testo SMS',
+                                title: Text('Pulsante ${index + 1}'),
+                                subtitle:
+                                    ValueListenableBuilder<TextEditingValue>(
+                                      valueListenable: _names[index],
+                                      builder: (context, value, child) =>
+                                          Text(value.text),
+                                    ),
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                      20,
+                                      16,
+                                      20,
+                                      20,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        TextFormField(
+                                          controller: _names[index],
+                                          enabled: !_saving,
+                                          decoration: const InputDecoration(
+                                            labelText: 'Nome',
+                                          ),
+                                          textInputAction: TextInputAction.next,
+                                          validator:
+                                              CommandButtonConfig.validateName,
+                                          onChanged: (_) => _markDirty(),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        TextFormField(
+                                          controller: _texts[index],
+                                          enabled: !_saving,
+                                          decoration: const InputDecoration(
+                                            labelText: 'Testo SMS',
+                                          ),
+                                          minLines: 2,
+                                          maxLines: 5,
+                                          keyboardType: TextInputType.multiline,
+                                          autocorrect: false,
+                                          enableSuggestions: false,
+                                          validator: CommandButtonConfig
+                                              .validateSmsText,
+                                          onChanged: (_) => _markDirty(),
+                                        ),
+                                        const SizedBox(height: 20),
+                                        const Text('Icona'),
+                                        const SizedBox(height: 8),
+                                        Wrap(
+                                          spacing: 8,
+                                          runSpacing: 8,
+                                          children: [
+                                            for (final icon
+                                                in CommandIcon.values)
+                                              ChoiceChip(
+                                                key: ValueKey(
+                                                  'icon_${index}_${icon.name}',
+                                                ),
+                                                avatar: Icon(
+                                                  icon.data,
+                                                  size: 20,
+                                                ),
+                                                label: Text(icon.label),
+                                                selected: _icons[index] == icon,
+                                                onSelected: _saving
+                                                    ? null
+                                                    : (_) => setState(() {
+                                                        _icons[index] = icon;
+                                                        _dirty = true;
+                                                      }),
+                                              ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 16),
+                                        const Text('Colore'),
+                                        const SizedBox(height: 8),
+                                        Wrap(
+                                          spacing: 8,
+                                          runSpacing: 8,
+                                          children: [
+                                            for (final color
+                                                in CommandColor.values)
+                                              ChoiceChip(
+                                                key: ValueKey(
+                                                  'color_${index}_${color.name}',
+                                                ),
+                                                avatar: Icon(
+                                                  Icons.circle,
+                                                  color: color.seed,
+                                                  size: 20,
+                                                ),
+                                                label: Text(color.label),
+                                                selected:
+                                                    _colors[index] == color,
+                                                onSelected: _saving
+                                                    ? null
+                                                    : (_) => setState(() {
+                                                        _colors[index] = color;
+                                                        _dirty = true;
+                                                      }),
+                                              ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 8),
+                                        SwitchListTile.adaptive(
+                                          contentPadding: EdgeInsets.zero,
+                                          title: const Text('Chiedi conferma'),
+                                          value: _confirmations[index],
+                                          onChanged: _saving
+                                              ? null
+                                              : (value) => setState(() {
+                                                  _confirmations[index] = value;
+                                                  _dirty = true;
+                                                }),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  minLines: 2,
-                                  maxLines: 5,
-                                  keyboardType: TextInputType.multiline,
-                                  autocorrect: false,
-                                  enableSuggestions: false,
-                                  validator:
-                                      CommandButtonConfig.validateSmsText,
-                                  onChanged: (_) => _markDirty(),
-                                ),
-                                const SizedBox(height: 20),
-                                const Text('Icona'),
-                                const SizedBox(height: 8),
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children: [
-                                    for (final icon in CommandIcon.values)
-                                      ChoiceChip(
-                                        key: ValueKey(
-                                          'icon_${index}_${icon.name}',
-                                        ),
-                                        avatar: Icon(icon.data, size: 20),
-                                        label: Text(icon.label),
-                                        selected: _icons[index] == icon,
-                                        onSelected: _saving
-                                            ? null
-                                            : (_) => setState(() {
-                                                _icons[index] = icon;
-                                                _dirty = true;
-                                              }),
-                                      ),
-                                  ],
-                                ),
-                                const SizedBox(height: 16),
-                                const Text('Colore'),
-                                const SizedBox(height: 8),
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children: [
-                                    for (final color in CommandColor.values)
-                                      ChoiceChip(
-                                        key: ValueKey(
-                                          'color_${index}_${color.name}',
-                                        ),
-                                        avatar: Icon(
-                                          Icons.circle,
-                                          color: color.seed,
-                                          size: 20,
-                                        ),
-                                        label: Text(color.label),
-                                        selected: _colors[index] == color,
-                                        onSelected: _saving
-                                            ? null
-                                            : (_) => setState(() {
-                                                _colors[index] = color;
-                                                _dirty = true;
-                                              }),
-                                      ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                SwitchListTile.adaptive(
-                                  contentPadding: EdgeInsets.zero,
-                                  title: const Text('Chiedi conferma'),
-                                  value: _confirmations[index],
-                                  onChanged: _saving
-                                      ? null
-                                      : (value) => setState(() {
-                                          _confirmations[index] = value;
-                                          _dirty = true;
-                                        }),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
                       FilledButton.icon(
                         onPressed: _saving ? null : _save,
                         icon: _saving
