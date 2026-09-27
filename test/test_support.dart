@@ -36,6 +36,6 @@ class RecordingSmsService extends SmsService {
     required String text,
   }) async {
     sent.add((recipient: recipient, text: text));
-    return SmsResult.opened;
+    return SmsResult.sent;
   }
 }

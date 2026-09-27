@@ -50,17 +50,19 @@ void main() {
     await tapSave(tester);
     expect(find.text('Inserisci il numero destinatario.'), findsOneWidget);
     expect(preferences.values, isEmpty);
+    await tester.tap(find.text('Pulsante 1'));
+    await tester.pumpAndSettle();
     final fields = find.byType(TextFormField);
     await tester.ensureVisible(fields.at(0));
     await tester.enterText(fields.at(0), '+39 333 1234567');
     await tester.enterText(fields.at(1), 'Luci');
     await tester.ensureVisible(fields.at(2));
     await tester.enterText(fields.at(2), ' ON\n');
-    final iconChoice = find.byKey(const ValueKey('icon_0_melody'));
+    final iconChoice = find.byKey(const ValueKey('icon_0_light'));
     for (final removed in ['power', 'bolt', 'sms', 'gate']) {
       expect(find.byKey(ValueKey('icon_0_$removed')), findsNothing);
     }
-    final colorChoice = find.byKey(const ValueKey('color_0_coral'));
+    final colorChoice = find.byKey(const ValueKey('color_0_blue'));
     await tester.ensureVisible(iconChoice);
     await tester.tap(iconChoice);
     await tester.pumpAndSettle();
@@ -76,21 +78,23 @@ void main() {
     expect(saved.recipient, '+393331234567');
     expect(saved.buttons.first.smsText, ' ON\n');
     expect(saved.buttons.first.requireConfirmation, isFalse);
-    expect(saved.buttons.first.icon, CommandIcon.melody);
-    expect(saved.buttons.first.color, CommandColor.amber);
+    expect(saved.buttons.first.icon, CommandIcon.light);
+    expect(saved.buttons.first.color, CommandColor.blue);
     final homeButton = tester.widget<CommandButton>(
       find.byType(CommandButton).first,
     );
-    expect(homeButton.config.icon, CommandIcon.melody);
-    expect(homeButton.config.color, CommandColor.amber);
-    expect(find.byIcon(Icons.music_note_outlined), findsOneWidget);
+    expect(homeButton.config.icon, CommandIcon.light);
+    expect(homeButton.config.color, CommandColor.blue);
+    expect(find.byIcon(Icons.lightbulb_outline), findsWidgets);
     await openSettings(tester);
+    await tester.tap(find.text('Pulsante 1'));
+    await tester.pumpAndSettle();
     expect(tester.widget<TextFormField>(fields.at(1)).controller!.text, 'Luci');
     expect(tester.widget<ChoiceChip>(iconChoice).selected, isTrue);
     expect(tester.widget<ChoiceChip>(colorChoice).selected, isTrue);
   });
 
-  testWidgets('Confirmation cancel, accept and native composer request', (
+  testWidgets('Confirmation cancel, accept and direct SMS request', (
     tester,
   ) async {
     final storage = StorageService(preferences: MemoryPreferences());
@@ -122,6 +126,10 @@ void main() {
     await tester.tap(find.text('Continua'));
     await tester.pumpAndSettle();
     expect(sms.sent.single, (recipient: '12345', text: 'CMD0'));
+    expect(
+      find.text('SMS inviato alla rete. Consegna non confermata.'),
+      findsOneWidget,
+    );
     await tester.ensureVisible(find.text('Tasto 1'));
     await tester.tap(find.text('Tasto 1'));
     await tester.pumpAndSettle();

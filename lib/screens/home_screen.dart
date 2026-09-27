@@ -68,6 +68,31 @@ class _HomeScreenState extends State<HomeScreen> {
       ..showSnackBar(SnackBar(content: Text(message)));
   }
 
+  void _showSentFeedback() {
+    final colors = Theme.of(context).colorScheme;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          backgroundColor: colors.primary,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 4),
+          content: Row(
+            children: [
+              Icon(Icons.check_circle_outline, color: colors.onPrimary),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'SMS inviato alla rete. Consegna non confermata.',
+                  style: TextStyle(color: colors.onPrimary),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+  }
+
   Future<void> _send(int index) async {
     final settings = _settings;
     if (settings == null || !settings.isReady || _activeCommand != null) return;
@@ -89,7 +114,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(command.smsText),
                   const SizedBox(height: 16),
                   const Text(
-                    'Conferma l’invio nella schermata SMS di sistema.',
+                    'Dopo la conferma l’SMS partirà direttamente, senza '
+                    'aprire un’altra app. Potrebbero applicarsi tariffe '
+                    'dell’operatore.',
                   ),
                 ],
               ),
@@ -109,17 +136,12 @@ class _HomeScreenState extends State<HomeScreen> {
         if (confirmed != true || !mounted) return;
       }
       setState(() => _sending = true);
-      final result = await widget.sms.send(
+      await widget.sms.send(
         recipient: settings.recipient,
         text: command.smsText,
       );
       if (mounted) {
-        _showMessage(switch (result) {
-          SmsResult.opened =>
-            'Messaggio aperto: completa l’invio nell’app SMS.',
-          SmsResult.sent => 'Messaggio affidato al sistema per l’invio.',
-          SmsResult.cancelled => 'Invio annullato.',
-        });
+        _showSentFeedback();
       }
     } on PlatformException catch (error) {
       if (mounted) {
@@ -127,6 +149,12 @@ class _HomeScreenState extends State<HomeScreen> {
           'unavailable' =>
             'SMS non disponibili. Verifica che il dispositivo sia configurato per inviare SMS.',
           'busy' => 'Un’altra schermata è aperta. Chiudila e riprova.',
+          'permission_denied' =>
+            'Permesso SMS negato. Concedi a GSM Remote il permesso di inviare SMS nelle impostazioni Android.',
+          'sim_not_selected' =>
+            'Seleziona una SIM predefinita per gli SMS nelle impostazioni Android.',
+          'send_timeout' =>
+            'Android non ha restituito l’esito. Controlla i messaggi inviati prima di riprovare.',
           'send_failed' =>
             'Invio non riuscito. Verifica il servizio telefonico e riprova.',
           _ => 'Impossibile aprire il messaggio. Riprova.',
@@ -134,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     } on MissingPluginException {
       if (mounted) {
-        _showMessage('Invio SMS disponibile solo nell’app Android o iOS.');
+        _showMessage('Invio SMS disponibile solo nell’app Android.');
       }
     } catch (_) {
       if (mounted) _showMessage('Impossibile aprire il messaggio. Riprova.');
@@ -226,7 +254,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 8),
                         const Text(
-                          'Scegli un comando e completa l’invio nella schermata SMS.',
+                          'Scegli un comando per inviare un SMS direttamente. '
+                          'Potrebbero applicarsi tariffe dell’operatore.',
                         ),
                         const SizedBox(height: 24),
                         for (

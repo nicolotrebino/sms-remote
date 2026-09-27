@@ -1,13 +1,11 @@
-"""Generate native launcher assets from the original PNG (requires ImageMagick)."""
+"""Generate Android launcher assets from the original PNG (requires ImageMagick)."""
 
-import json
 from pathlib import Path
 import subprocess
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / 'assets/images/trebino_icon.png'
 RES = ROOT / 'android/app/src/main/res'
-IOS = ROOT / 'ios/Runner/Assets.xcassets/AppIcon.appiconset'
 BACKGROUND = '#FFFBF2'
 
 
@@ -42,8 +40,4 @@ adaptive.write_text('''<?xml version="1.0" encoding="utf-8"?>
 </resources>
 ''')
 
-for entry in json.loads((IOS / 'Contents.json').read_text())['images']:
-    size = round(float(entry['size'].split('x')[0]) * float(entry['scale'].removesuffix('x')))
-    render(IOS / entry['filename'], size, round(size * 0.8), BACKGROUND)
-
-print('Generated Android legacy/adaptive and iOS app icons.')
+print('Generated Android legacy and adaptive app icons.')

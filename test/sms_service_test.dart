@@ -12,21 +12,21 @@ void main() {
     calls.clear();
     messenger.setMockMethodCallHandler(SmsService.channel, (call) async {
       calls.add(call);
-      return 'opened';
+      return 'sent';
     });
   });
   tearDown(() => messenger.setMockMethodCallHandler(SmsService.channel, null));
 
   test(
-    'Passes normalized recipient and exact text to native SMS composer',
+    'Sends normalized recipient and exact text through the native service',
     () async {
       const text = ' ON + & ? # 50% è 🚀\nOFF ';
       final result = await SmsService().send(
         recipient: '+39 (333) 123-4567',
         text: text,
       );
-      expect(result, SmsResult.opened);
-      expect(calls.single.method, 'compose');
+      expect(result, SmsResult.sent);
+      expect(calls.single.method, 'send');
       expect(calls.single.arguments, {
         'recipient': '+393331234567',
         'text': text,
@@ -44,16 +44,6 @@ void main() {
       throwsArgumentError,
     );
     expect(calls, isEmpty);
-  });
-
-  test('Distinguishes iOS sent and cancelled results', () async {
-    for (final result in [SmsResult.sent, SmsResult.cancelled]) {
-      messenger.setMockMethodCallHandler(
-        SmsService.channel,
-        (_) async => result.name,
-      );
-      expect(await SmsService().send(recipient: '12345', text: 'ON'), result);
-    }
   });
 
   test(

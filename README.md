@@ -1,8 +1,11 @@
 # GSM Remote
 
-App Flutter Android/iOS interamente locale, con quattro comandi personalizzabili.
-I comandi aprono il **compositore SMS nativo** con destinatario e testo compilati:
-l'utente preme Invio nella schermata di sistema. Non servono account o backend.
+App Flutter per Android, interamente locale, con quattro comandi personalizzabili.
+I comandi inviano SMS direttamente dal dispositivo senza aprire l'app Messaggi.
+Al primo invio Android chiede il permesso di invio SMS; ogni comando mantiene la
+propria opzione di conferma. Un feedback conferma che Android ha affidato il
+messaggio alla rete, ma non conferma la consegna al destinatario. Non servono
+account o backend.
 La UI ha quattro accenti di colore e segue il tema chiaro/scuro di sistema.
 
 ## Utilizzo
@@ -21,8 +24,10 @@ Il numero accetta 3–15 cifre, un `+` iniziale facoltativo e separatori comuni
 validazione sintattica, non una verifica dell'esistenza del numero. I nomi sono
 obbligatori e limitati a 40 caratteri. Il testo SMS non può essere vuoto o composto
 solo da spazi; gli spazi e gli a capo del testo vengono conservati esattamente.
-Non è imposto un limite di 160 caratteri: codifica, segmentazione e scelta della
-SIM vengono gestite dal compositore di sistema.
+Non è imposto un limite di 160 caratteri: Android divide automaticamente i
+messaggi lunghi in più parti. Su dispositivi dual SIM va selezionata una SIM
+predefinita per gli SMS nelle impostazioni Android. Si applicano le tariffe del
+proprio operatore.
 
 ## Scaricare e installare l'APK
 
