@@ -5,19 +5,6 @@ I comandi aprono il **compositore SMS nativo** con destinatario e testo compilat
 l'utente preme Invio nella schermata di sistema. Non servono account o backend.
 La UI ha quattro accenti di colore e segue il tema chiaro/scuro di sistema.
 
-## Avvio
-
-Con Flutter stable installato e un dispositivo/emulatore disponibile:
-
-```sh
-flutter pub get
-flutter run
-```
-
-Per iOS occorrono macOS e Xcode. Gli identificatori di progetto sono provvisori
-(`com.example.sms_remote`); prima della distribuzione impostare gli identificatori
-definitivi e la firma delle app. Le cartelle Android e iOS sono già generate.
-
 ## Utilizzo
 
 Aprire l'ingranaggio nella Home, configurare il destinatario e i quattro comandi,
@@ -37,128 +24,24 @@ solo da spazi; gli spazi e gli a capo del testo vengono conservati esattamente.
 Non è imposto un limite di 160 caratteri: codifica, segmentazione e scelta della
 SIM vengono gestite dal compositore di sistema.
 
-## Struttura
+## Scaricare e installare l'APK
 
-```text
-lib/
-  main.dart
-  models/
-    app_settings.dart
-    command_button_config.dart
-  screens/
-    home_screen.dart
-    settings_screen.dart
-  services/
-    storage_service.dart
-    sms_service.dart
-  widgets/
-    command_button.dart
-    command_button_style.dart
-```
+1. Apri la pagina [Release di GSM Remote su GitHub](https://github.com/nicolotrebino/sms-remote/releases/latest).
+2. Nella sezione **Assets**, scarica il file `.apk` della versione più recente. Il file `.sha1` contiene solo l'impronta di verifica e non installa l'app.
+3. Apri l'APK scaricato sul telefono Android e conferma l'installazione. Se richiesto, autorizza temporaneamente il browser o il file manager usato per scaricarlo a installare app sconosciute.
 
-`StorageService` salva un documento JSON versionato tramite
-[`shared_preferences`](https://pub.dev/packages/shared_preferences), unica
-dipendenza applicativa oltre a Flutter, usando `SharedPreferencesAsync`.
-Nessun backend, database remoto o sincronizzazione applicativa. Il backup Android
-è disabilitato nel manifest principale. I dati mancanti producono quattro comandi
-iniziali; dati illeggibili o errori di lettura vengono segnalati senza sovrascrivere
-silenziosamente la configurazione. Un errore di salvataggio mantiene le modifiche
-nell'editor e la configurazione precedente nella Home.
+Se Android segnala che l'app proviene da una fonte esterna, verifica di aver scaricato l'APK dalla Release ufficiale indicata sopra prima di proseguire.
 
-## Invio SMS nativo
+## Licenza
 
-`SmsService.send` usa un `MethodChannel` (`sms_remote/sms`), senza nuovi pacchetti:
+GSM Remote è disponibile gratuitamente per uso personale o interno, alle
+condizioni della [licenza proprietaria](LICENSE). La vendita, la distribuzione
+commerciale, il rebranding e la distribuzione di versioni modificate richiedono
+l'autorizzazione scritta del titolare dei diritti. Le librerie e gli altri
+materiali di terzi mantengono le proprie licenze e condizioni.
 
-- **Android:** `ACTION_SENDTO` con `smsto:` e `sms_body` apre l'app SMS.
-  Il risultato `opened` indica solo l'apertura: Android non restituisce un esito
-  affidabile di invio da questo flusso. L'app non mostra quindi “SMS inviato”.
-- **iOS:** `MFMessageComposeViewController` presenta il compositore di sistema e
-  restituisce invio accettato, annullamento o errore. L'invio accettato non è una
-  ricevuta di consegna. iOS richiede l'interazione dell'utente per inviare.
-
-L'interruttore **Chiedi conferma** controlla il riepilogo interno prima di aprire
-il compositore; disattivarlo non elimina la conferma di invio del sistema.
-I pulsanti sono bloccati durante la richiesta per evitare aperture sovrapposte.
-Dispositivi senza supporto SMS e assenza dell'app SMS mostrano un errore gestito.
-Il testo viene passato direttamente alle API native: spazi, a capo e caratteri
-speciali non subiscono codifiche URL. Nessun permesso `SEND_SMS` o accesso a rubrica
-e messaggi ricevuti è richiesto.
-
-Per SMS tradizionali serve un dispositivo con servizio telefonico SMS attivo;
-si applicano le tariffe dell'operatore. L'app non usa Internet; il compositore di
-sistema può scegliere iMessage/RCS in base alle impostazioni del dispositivo.
-Per comandare un dispositivo che accetta solo SMS, verificare che il compositore
-utilizzi SMS. Questa implementazione non forza il trasporto né invia in background.
-
-Riferimenti: [Android messaging intents](https://developer.android.com/guide/components/intents-common#Messaging),
-[Apple MessageUI](https://developer.apple.com/documentation/messageui/mfmessagecomposeviewcontroller).
-
-Non sono necessarie connessioni Internet per usare l'app. Il download dell'SDK e
-delle dipendenze durante lo sviluppo richiede la rete; il permesso Internet nei
-manifest Android debug/profile generati da Flutter serve agli strumenti di debug,
-mentre il manifest principale non lo richiede.
-
-## Verifiche
-
-```sh
-dart format lib test
-flutter analyze
-flutter test
-```
-
-I test coprono persistenza tramite uno storage in memoria, dati corrotti,
-validazione, aggiornamento della Home, conferme, errori di salvataggio,
-annullamento modifiche e layout su schermo piccolo con testo ingrandito e tema
-scuro, oltre al contratto del canale nativo (testo esatto, esiti ed errori).
-I test automatici non inviano SMS reali.
-
-Dopo modifiche al codice Kotlin/Swift serve un riavvio completo (`flutter run`),
-non basta hot reload. Su telefoni reali verificare:
-
-1. Compilazione esatta di destinatario e testo per ciascuno dei quattro comandi.
-2. Conferma attiva/disattiva, annullamento e ritorno alla Home.
-3. Invio a un numero di prova controllato e ricezione effettiva.
-4. Comportamento senza servizio SMS e, su Android, selezione SIM se presente.
-
-La build iOS e la prova su iPhone richiedono macOS/Xcode; il simulatore non è
-sufficiente per verificare la consegna SMS.
-
-
-## Branding e icone applicazione
-
-Il marchio orizzontale trasparente `assets/images/trebino.png` è integrato
-nella barra compatta della Home, sullo stesso sfondo del contenuto, accanto
-all'accesso alle impostazioni. Gli accenti del tema riprendono l'oro Trebino;
-i colori personalizzati dei comandi rimangono invariati.
-Le icone comando disponibili sono Melodia, Luce, Chiesa, Distesa (campana) e Martello.
-Le impostazioni mostrano i quattro comandi in pannelli esclusivi: aprirne uno
-chiude quello aperto in precedenza. Ogni pannello riepiloga icona, colore e nome.
-
-Le icone native Android (anche adattive) e iOS sono generate da
-`assets/images/trebino_icon.png`, centrato senza deformazioni su fondo avorio.
-I file sorgente non vengono modificati. Per rigenerarle con ImageMagick installato:
-
-```sh
-python3 tool/generate_app_icons.py
-```
-
-Le dimensioni del livello adattivo seguono la
-[guida Android](https://developer.android.com/develop/ui/compose/system/icon_design_adaptive).
-L'icona di lancio è una risorsa nativa e non richiede registrazione in `pubspec.yaml`.
-Dopo la modifica serve ricompilare e aggiornare l'app installata; hot reload non
-aggiorna l'icona nel launcher.
-
-## APK Android per GitHub Releases
-
-La variante `release` è firmata con una chiave RSA dedicata, conservata in locale
-nei file ignorati `android/app/gsm-remote-release.keystore` e `android/key.properties`;
-la password è in `android/gsm-remote-release.password`. Gradle non usa la chiave
-debug. Esegui `flutter build apk --release` per creare l'APK firmato.
-
-La chiave privata e le password non vanno caricate su GitHub o condivise. Fai
-una copia di sicurezza cifrata dei tre file: la stessa chiave serve per firmare
-ogni aggiornamento e senza di essa Android non accetterà l'aggiornamento di chi ha
-installato questa versione. L'APK è destinato alla distribuzione diretta come
-asset di una GitHub Release; per installarlo dopo la precedente build debug, prima
-disinstalla la versione debug. L'application ID attuale resta quello provvisorio
-`com.example.sms_remote`.
+La licenza non elimina le funzionalità di visualizzazione e fork che GitHub
+prevede per i repository pubblici nei propri Termini di servizio; non concede
+però altri diritti d'uso sul codice. Prima della pubblicazione, sostituisci il
+segnaposto del titolare in `LICENSE` con il titolare effettivo dei diritti e
+verifica di poter applicare queste condizioni a tutti i materiali inclusi.
