@@ -31,22 +31,14 @@ proprio operatore.
 
 ## Scaricare e installare l'APK
 
-1. Apri la pagina [Release di GSM Remote su GitHub](https://github.com/nicolotrebino/sms-remote/releases/latest).
-2. Nella sezione **Assets**, scarica il file `.apk` della versione più recente. Il file `.sha1` contiene solo l'impronta di verifica e non installa l'app.
-3. Apri l'APK scaricato sul telefono Android e conferma l'installazione. Se richiesto, autorizza temporaneamente il browser o il file manager usato per scaricarlo a installare app sconosciute.
+Scarica l'APK da una delle due pagine:
 
-Se Android segnala che l'app proviene da una fonte esterna, verifica di aver scaricato l'APK dalla Release ufficiale indicata sopra prima di proseguire.
+- **[Ultima release su GitHub](https://github.com/nicolotrebino/sms-remote/releases/latest)**: nella sezione **Assets**, seleziona il file `.apk`.
+- **[Sito di GSM Remote](https://nicolotrebino.github.io/sms-remote/)**: premi **Scarica APK**.
 
-## Sito web GitHub Pages
-
-La pagina di download è in `docs/` e punta all'APK della release 1.1.1. Per
-pubblicarla, apri [Settings → Pages](https://github.com/nicolotrebino/sms-remote/settings/pages)
-nel repository GitHub, scegli **Deploy from a branch**, seleziona il branch
-`main` e la cartella `/docs`, quindi salva.
-GitHub pubblicherà la pagina su
-https://nicolotrebino.github.io/sms-remote/ e aggiornerà il sito a ogni push sul
-branch selezionato. Per le release future aggiorna anche il link all'APK in
-`docs/index.html` se cambia il nome del file.
+Apri il file scaricato sul telefono Android e conferma l'installazione. Se
+richiesto, autorizza il browser o il file manager a installare app sconosciute;
+puoi revocare questa autorizzazione dopo l'installazione.
 
 ## Licenza
 
@@ -58,6 +50,4 @@ materiali di terzi mantengono le proprie licenze e condizioni.
 
 La licenza non elimina le funzionalità di visualizzazione e fork che GitHub
 prevede per i repository pubblici nei propri Termini di servizio; non concede
-però altri diritti d'uso sul codice. Prima della pubblicazione, sostituisci il
-segnaposto del titolare in `LICENSE` con il titolare effettivo dei diritti e
-verifica di poter applicare queste condizioni a tutti i materiali inclusi.
+però altri diritti d'uso sul codice.

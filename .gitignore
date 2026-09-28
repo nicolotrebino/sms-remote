@@ -1,7 +1,8 @@
-# Miscellaneous
+# Temporary files and operating system metadata
 *.class
 *.log
 *.pyc
+__pycache__/
 *.swp
 .DS_Store
 .atom/
@@ -11,56 +12,41 @@
 .svn/
 migrate_working_dir/
 
-# IntelliJ related
+# Local IDE and assistant settings
 *.iml
 *.ipr
 *.iws
 .idea/
+.vscode/
+/.agents/
+/.codex/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
+# Flutter/Dart dependencies, caches and generated documentation
 **/doc/api/
 .dart_tool/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
-/coverage/
-
-# Symbolication related
-app.*.symbols
-
-# Obfuscation related
-app.*.map.json
-
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
-/android/key.properties
-/android/app/gsm-remote-release.keystore
-/android/gsm-remote-release.password
-
-# Widget Preview related
 .widget_preview/
 
-# Other
-dist/
+# Build output and coverage
 build/
-**/build/
-android/build/
+/dist/
+/coverage/
+/android/app/debug/
+/android/app/profile/
+/android/app/release/
 
-*.jks
-*.keystore
+# Release artifacts (upload APKs to GitHub Releases)
 *.apk
 *.aab
+app.*.symbols
+app.*.map.json
 
+# Local signing credentials and environment settings
+*.jks
+*.keystore
+*.password
 key.properties
-**/key.properties
-
 .env
 .env.*
