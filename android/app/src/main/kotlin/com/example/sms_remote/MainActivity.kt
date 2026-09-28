@@ -14,6 +14,7 @@ import android.os.Handler
 import android.os.Looper
 import android.telephony.SmsManager
 import android.telephony.SubscriptionManager
+import androidx.core.content.ContextCompat
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -86,7 +87,14 @@ class MainActivity : FlutterActivity() {
                     result.error("invalid_arguments", "Numero o testo non valido.", null)
                     return@setMethodCallHandler
                 }
-                if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY_MESSAGING)) {
+                // The messaging-specific feature was introduced in Android 13.
+                // Older phones only advertise the general telephony feature.
+                val smsFeature = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    PackageManager.FEATURE_TELEPHONY_MESSAGING
+                } else {
+                    PackageManager.FEATURE_TELEPHONY
+                }
+                if (!packageManager.hasSystemFeature(smsFeature)) {
                     result.error("unavailable", "Questo dispositivo non supporta gli SMS.", null)
                     return@setMethodCallHandler
                 }
@@ -131,8 +139,13 @@ class MainActivity : FlutterActivity() {
                 return
             }
 
-            val smsManager = getSystemService(SmsManager::class.java)
-                .createForSubscriptionId(subscriptionId)
+            val smsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                getSystemService(SmsManager::class.java)
+                    .createForSubscriptionId(subscriptionId)
+            } else {
+                @Suppress("DEPRECATION")
+                SmsManager.getSmsManagerForSubscriptionId(subscriptionId)
+            }
             val parts = smsManager.divideMessage(request.text)
             if (parts.isEmpty()) {
                 finishWithError("send_failed", "Il testo SMS è vuoto.")
@@ -189,12 +202,12 @@ class MainActivity : FlutterActivity() {
         val filter = IntentFilter(SMS_SENT_ACTION).apply {
             addDataScheme("smsremote")
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(smsSentReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
-        } else {
-            @Suppress("DEPRECATION")
-            registerReceiver(smsSentReceiver, filter)
-        }
+        ContextCompat.registerReceiver(
+            this,
+            smsSentReceiver,
+            filter,
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
         receiverRegistered = true
     }
 
