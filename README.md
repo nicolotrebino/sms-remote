@@ -37,6 +37,17 @@ proprio operatore.
 
 Se Android segnala che l'app proviene da una fonte esterna, verifica di aver scaricato l'APK dalla Release ufficiale indicata sopra prima di proseguire.
 
+## Sito web GitHub Pages
+
+La pagina di download è in `docs/` e punta all'APK della release 1.1.0. Per
+pubblicarla, apri [Settings → Pages](https://github.com/nicolotrebino/sms-remote/settings/pages)
+nel repository GitHub, scegli **Deploy from a branch**, seleziona il branch
+`main` e la cartella `/docs`, quindi salva.
+GitHub pubblicherà la pagina su
+https://nicolotrebino.github.io/sms-remote/ e aggiornerà il sito a ogni push sul
+branch selezionato. Per le release future aggiorna anche il link all'APK in
+`docs/index.html` se cambia il nome del file.
+
 ## Licenza
 
 GSM Remote è disponibile gratuitamente per uso personale o interno, alle
