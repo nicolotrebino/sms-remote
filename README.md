@@ -39,7 +39,7 @@ Se Android segnala che l'app proviene da una fonte esterna, verifica di aver sca
 
 ## Sito web GitHub Pages
 
-La pagina di download è in `docs/` e punta all'APK della release 1.1.0. Per
+La pagina di download è in `docs/` e punta all'APK della release 1.1.1. Per
 pubblicarla, apri [Settings → Pages](https://github.com/nicolotrebino/sms-remote/settings/pages)
 nel repository GitHub, scegli **Deploy from a branch**, seleziona il branch
 `main` e la cartella `/docs`, quindi salva.
@@ -47,26 +47,6 @@ GitHub pubblicherà la pagina su
 https://nicolotrebino.github.io/sms-remote/ e aggiornerà il sito a ogni push sul
 branch selezionato. Per le release future aggiorna anche il link all'APK in
 `docs/index.html` se cambia il nome del file.
-
-## iPhone: Comandi Rapidi
-
-GitHub Pages include i tab Android e iOS, selezionati automaticamente in base
-al dispositivo (Android come predefinito su desktop). Il modulo iOS prepara un
-numero destinatario e quattro comandi con nomi distinti e testi SMS. La
-configurazione può essere copiata o scaricata come JSON; non è un file installabile.
-
-Il flusso previsto è: installare **GSM Remote** da iCloud, compilare il modulo,
-copiare e importare la configurazione, quindi avviare il telecomando dalla Home
-o da Comandi Rapidi. La shortcut presenta una lista di quattro voci e richiede
-conferma per l’invio. I dati personali sono salvati nel proprio iCloud Drive.
-
-**Da completare su un dispositivo Apple:** creare e collaudare la shortcut
-seguendo [ios/SETUP.md](ios/SETUP.md), condividerla e inserire il link iCloud in
-`docs/ios-config.js`. Finché il link manca, il sito segnala che l’installazione
-non è disponibile e non abilita l’importazione. Nessuna shortcut firmata viene
-generata da GitHub Pages.
-
-Verifica del formato e della validazione: `node --test test/ios_config_test.cjs`.
 
 ## Licenza
 

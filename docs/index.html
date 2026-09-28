@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="GSM Remote di Trebino: telecomando SMS per Android e configurazione Comandi Rapidi per iPhone."
+      content="GSM Remote di Trebino: telecomando SMS per Android."
     />
     <meta name="theme-color" content="#f6f4ee" />
     <title>GSM Remote — Telecomando SMS Trebino</title>
@@ -38,7 +38,7 @@
           radial-gradient(ellipse at 84% 35%, rgb(184 135 62 / 9%), transparent 34rem),
           var(--paper);
         color: var(--ink);
-        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        font-family: Inter, ui-sans-serif, system-ui,
           "Segoe UI", sans-serif;
         -webkit-font-smoothing: antialiased;
       }
@@ -389,23 +389,6 @@
           transition-duration: 0.01ms !important;
         }
       }
-      [hidden] { display: none !important; }
-      .platform-tabs { display: flex; gap: 8px; margin: 28px 0 0; }
-      .platform-tabs button { padding: 12px 22px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--green); font: inherit; cursor: pointer; }
-      .platform-tabs button[aria-selected="true"] { background: var(--green); color: white; }
-      button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
-      .ios-form { margin-top: 28px; }
-      .ios-form label { display: block; margin: 12px 0 6px; font-size: 14px; font-weight: 650; }
-      .ios-form input, .ios-form textarea { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); font: inherit; font-size: 16px; }
-      .ios-form textarea { resize: vertical; }
-      .ios-form fieldset { min-width: 0; margin: 20px 0; padding: 14px; border: 1px solid var(--line); border-radius: 12px; }
-      .ios-form legend { color: var(--green); font-weight: 700; }
-      button { cursor: pointer; }
-      button:disabled { opacity: .55; cursor: not-allowed; }
-      .setup-steps { padding-left: 22px; line-height: 1.7; color: var(--muted); }
-      #ios-status { color: var(--green); }
-      .command-message { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; color: var(--muted); }
-      .command-name { overflow-wrap: anywhere; }
     </style>
   </head>
   <body>
@@ -417,10 +400,6 @@
         <span class="release-tag">Android · 1.1.1</span>
       </header>
 
-      <div class="platform-tabs" role="tablist" aria-label="Sistema operativo">
-        <button id="tab-android" type="button" role="tab" aria-selected="true" aria-controls="panel-android">Android</button>
-        <button id="tab-ios" type="button" role="tab" aria-selected="false" aria-controls="panel-ios" tabindex="-1">iOS</button>
-      </div>
       <main>
         <section class="hero" aria-labelledby="page-title">
           <p class="eyebrow">Telecomando SMS</p>
@@ -430,7 +409,6 @@
             inviati direttamente dal tuo telefono: semplice, immediato, locale.
           </p>
 
-          <div id="panel-android" role="tabpanel" aria-labelledby="tab-android">
           <div class="actions">
             <a
               class="download"
@@ -461,43 +439,12 @@
             Versione 1.1.1 · APK Android. Al primo invio, Android chiederà il
             permesso per inviare SMS.
           </p>
-          </div>
-          <div id="panel-ios" role="tabpanel" aria-labelledby="tab-ios" hidden>
-            <p class="intro">Su iPhone, usa Comandi Rapidi. Prepara il numero del dispositivo e le quattro voci del tuo telecomando personale.</p>
-            <ol class="setup-steps">
-              <li>Installa il Comando Rapido condiviso e conferma l’aggiunta su iPhone.
-                <p><a id="ios-install" class="release-link" hidden>Installa GSM Remote ↗</a></p>
-                <p id="ios-unavailable">Il link di installazione sarà disponibile dopo la verifica su iPhone. Puoi già preparare e scaricare la configurazione.</p>
-              </li>
-              <li>Compila i quattro comandi, copia la configurazione e importala nel Comando Rapido.</li>
-              <li>Apri GSM Remote da Comandi Rapidi, scegli una delle quattro voci e conferma il messaggio. Puoi aggiungerlo alla schermata Home.</li>
-            </ol>
-            <form id="ios-form" class="ios-form" autocomplete="off">
-              <label for="ios-phone">Numero destinatario</label>
-              <input id="ios-phone" name="phone" type="tel" placeholder="+39 333 1234567" required aria-describedby="phone-help" />
-              <p id="phone-help" class="download-note">Da 3 a 15 cifre, con prefisso internazionale consigliato.</p>
-              <div id="ios-commands"></div>
-              <p class="download-note">Il sito non invia numero e messaggi a un server. Il modulo si svuota ricaricando la pagina. La configurazione copiata resta negli appunti; quella importata viene salvata dal Comando Rapido nel tuo iCloud Drive. Si applicano le tariffe SMS del tuo operatore.</p>
-              <div class="actions">
-                <button class="download" type="submit">Copia configurazione</button>
-                <button id="ios-download" class="download" type="button">Scarica configurazione</button>
-              </div>
-              <p class="download-note">Il file scaricato contiene le impostazioni personali, non installa il Comando Rapido. Da computer, trasferiscilo all’iPhone e copia tutto il suo contenuto.</p>
-              <p id="ios-status" role="status" aria-live="polite"></p>
-              <div id="ios-manual-copy" hidden>
-                <label for="ios-json">Seleziona e copia tutto questo testo</label>
-                <textarea id="ios-json" readonly rows="6" spellcheck="false"></textarea>
-              </div>
-              <p><a id="ios-import" class="download" hidden>Importa in Comandi Rapidi</a></p>
-              <p id="ios-import-help" class="download-note" hidden>L’importazione legge gli appunti e chiede conferma prima di sostituire la configurazione precedente. Non invia SMS. Mantieni il nome “GSM Remote” per consentire l’apertura dal sito.</p>
-            </form>
-          </div>
         </section>
 
         <aside class="preview" aria-label="Anteprima dei quattro comandi">
           <div class="preview-head">
             <p class="preview-title">I tuoi comandi</p>
-            <span class="local-label">TUTTO SUL DISPOSITIVO</span>
+            <span class="local-label">QUATTRO COMANDI</span>
           </div>
           <div class="command-grid" aria-hidden="true">
             <div class="command">
@@ -527,21 +474,17 @@
               />
               <path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-            Nessun account. Nessun backend. Solo SMS.
+            Nessun account. SMS dal tuo telefono.
           </div>
         </aside>
       </main>
 
       <footer>
         <span>GSM Remote · Trebino S.n.c.</span>
-        <a href="https://github.com/nicolotrebino/sms-remote/releases/latest">
+        <a href="https://github.com/nicolotrebino/sms-remote/releases">
           Tutte le versioni su GitHub
         </a>
       </footer>
     </div>
-    <noscript>Per selezionare iOS e preparare la configurazione, abilita JavaScript nel browser.</noscript>
-    <script src="ios-config.js" defer></script>
-    <script src="ios-config-core.js" defer></script>
-    <script src="ios.js" defer></script>
   </body>
 </html>
